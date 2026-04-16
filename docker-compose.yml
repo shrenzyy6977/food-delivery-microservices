@@ -61,6 +61,26 @@ services:
       PORT: 3001
       MONGO_URI: mongodb://mongodb:27017/restaurants_db
 
+  
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  menu-service:
+    build: ./menu-service
+    container_name: menu-service
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      PORT: 3002
+      MONGO_URI: mongodb://mongodb:27017/menu_db
+      REDIS_HOST: redis
+
 volumes:
     postgres_data:
     mongo_data:
