@@ -77,6 +77,28 @@ app.use('/menu', async (req, res) => {
     }
 });
 
+app.use('/orders', async (req, res) => {
+    try {
+        const response = await axios({
+            method: req.method,
+            url: `http://order-service:3003${req.originalUrl}`,
+            data: req.body,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        res.status(response.status).json(response.data);
+
+    } catch (err) {
+        if (err.response) {
+            return res.status(err.response.status).json(err.response.data);
+        }
+
+        res.status(500).json({ error: "Gateway error" });
+    }
+});
+
 app.get('/health', (req, res) => {
     res.json({ status: "ok" });
 });
